@@ -1,29 +1,18 @@
-use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
-mod pages;
-
-struct Model {
+pub struct PostList {
     link: ComponentLink<Self>,
-    value: i64,
 }
 
-enum Msg {
-    AddOne,
-}
-
-impl Component for Model {
-    type Message = Msg;
+impl Component for PostList {
     type Properties = ();
+    type Message = ();
+
     fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { link, value: 0 }
+        Self { link: link }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::AddOne => self.value += 1,
-        }
-
         true
     }
 
@@ -34,13 +23,8 @@ impl Component for Model {
     fn view(&self) -> Html {
         html! {
         <div>
-            <pages::home::Home/>
+            <h1>{"post list"}</h1>
         </div>
         }
     }
-}
-
-#[wasm_bindgen(start)]
-pub fn run_app() {
-    App::<Model>::new().mount_to_body();
 }

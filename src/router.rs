@@ -1,11 +1,13 @@
-use yew::prelude::*
+use yew_router::prelude::*;
 
-#[derive(Switch)]
-pub enum AppRoute {
-    #[at = "/post/{slug}"]
-    Post(String),
-    #[at = "/post"]
+#[derive(Switch, Clone)]
+pub enum Routes {
+    #[to = "/post"]
     Post,
-    #[at = "/"]
+    #[to = "/not-found"]
+    NotFound,
+    #[to = "/"]
     Home,
 }
+
+pub type AppRouter = Router<Routes>;
