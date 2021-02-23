@@ -1,1 +1,9 @@
 @import './components/navbar.scss';
+@import './components/gradient-bg.scss';
+
+
+@import './pages/post.scss';
+
+body {
+    max-height: 100vh;
+}

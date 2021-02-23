@@ -1,0 +1,7 @@
+[watch]
+ignore = ["target", "dist"]
+path = ["src", "scss", "./index.html"]
+
+[serve]
+ignore = ["target", "dist"]
+path = ["src", "scss", "./index.html"]

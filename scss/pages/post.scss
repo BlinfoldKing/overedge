@@ -1,0 +1,12 @@
+.post-list {
+    margin-top: 30vh;
+    .post-item {
+        cursor: pointer;
+        color: #333;
+        &.active, &:hover {
+            color: white;
+            height: 100%;
+            background: black;
+        }
+    }
+}

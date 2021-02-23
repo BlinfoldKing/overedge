@@ -1,6 +1,8 @@
+#![recursion_limit = "10000"]
 use wasm_bindgen::prelude::*;
 use yew::prelude::*;
 
+mod components;
 mod pages;
 mod router;
 
@@ -28,6 +30,7 @@ impl Component for Model {
     fn view(&self) -> Html {
         html! {
         <div>
+            {components::navbar::navbar()}
             <router::AppRouter
                 render=router::AppRouter::render(Self::switch)
                 redirect=router::AppRouter::redirect(|route: yew_router::route::Route| {
@@ -42,10 +45,16 @@ impl Component for Model {
 impl Model {
     fn switch(switch: router::Routes) -> Html {
         match switch {
+            router::Routes::PostDetail(slug) => {
+                html! { <pages::post::PostDetail slug=slug/> }
+            }
             router::Routes::Post => {
                 html! { <pages::post::PostList/> }
             }
             router::Routes::Home => {
+                html! { <pages::home::Home/> }
+            }
+            router::Routes::Contact => {
                 html! { <pages::home::Home/> }
             }
             _ => {
@@ -56,5 +65,6 @@ impl Model {
 }
 
 pub fn main() {
+    wasm_logger::init(wasm_logger::Config::default());
     yew::start_app::<Model>();
 }

@@ -22,7 +22,7 @@ impl Component for Error {
         html! {
         <div>
             <h1>{"404"}</h1>
-            <p>{"sorry, but the page you are searching are not of this dimension :<"}</p>
+            <p>{"Sorry, but the page you are searching are not of this dimension :<"}</p>
         </div>
         }
     }

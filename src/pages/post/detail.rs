@@ -1,15 +1,24 @@
 use yew::prelude::*;
 
-pub struct PostList {
+pub struct PostDetail {
     link: ComponentLink<Self>,
+    slug: String,
 }
 
-impl Component for PostList {
-    type Properties = ();
+#[derive(yew::Properties, Clone)]
+pub struct Props {
+    pub slug: String,
+}
+
+impl Component for PostDetail {
+    type Properties = Props;
     type Message = ();
 
-    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
-        Self { link: link }
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
+        Self {
+            link: link,
+            slug: props.slug,
+        }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
@@ -23,7 +32,7 @@ impl Component for PostList {
     fn view(&self) -> Html {
         html! {
         <div>
-            <h1>{"post list"}</h1>
+            <h1>{"post list"} {self.slug.clone()}</h1>
         </div>
         }
     }

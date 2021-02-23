@@ -21,7 +21,8 @@ impl Component for Home {
     fn view(&self) -> Html {
         html! {
         <div>
-            <h1>{"Hello World"}</h1>
+            <div></div>
+            <h1>{"Home"}</h1>
         </div>
         }
     }
