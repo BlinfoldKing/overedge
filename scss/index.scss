@@ -7,3 +7,18 @@
 body {
     max-height: 100vh;
 }
+
+@keyframes showOpacity {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+img {
+    opacity: 0;
+    animation: 0.5s ease-out 1s 1 showOpacity forwards !important;
+}

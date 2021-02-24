@@ -12,15 +12,21 @@ import (
 
 	"github.com/gernest/front"
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 )
+
+type Metadata struct {
+	Slug       string    `json:"slug"`
+	Title      string    `json:"title"`
+	Categories []string  `json:"categories"`
+	Author     string    `json:"author"`
+	Date       time.Time `json:"date"`
+}
 
 // Post post type
 type Post struct {
-	Title      string
-	Categories []string
-	Author     string
-	Date       time.Time
-	Body       string
+	Metadata
+	Body string `json:"body"`
 }
 
 // PostService service for post operation
@@ -42,7 +48,7 @@ func (service *PostService) Init() error {
 	})
 
 	m := front.NewMatter()
-	m.Handle("---", front.YAMLHandler)
+	m.Handle("+++", front.YAMLHandler)
 	for _, file := range files {
 		content, err := ioutil.ReadFile("./" + file)
 		if err != nil {
@@ -54,24 +60,36 @@ func (service *PostService) Init() error {
 		}
 
 		var buf bytes.Buffer
-		err = goldmark.Convert([]byte(body), &buf)
+		markdown := goldmark.New(
+			goldmark.WithExtensions(
+				extension.DefinitionList,
+				extension.Footnote,
+				extension.GFM,
+				extension.Typographer,
+			),
+		)
+		err = markdown.Convert([]byte(body), &buf)
 		if err != nil {
 			return err
 		}
 
 		date, _ := time.Parse(time.RFC3339, f["date"].(string))
 
-		post := Post{
-			Title:      f["title"].(string),
-			Author:     f["author"].(string),
-			Date:       date,
-			Categories: strings.Split(f["categories"].(string), ","),
-			Body:       string(buf.Bytes()),
-		}
-
 		file = file[6:]
 		file = file[:len(file)-3]
-		fmt.Println(file)
+
+		post := Post{
+			Metadata: Metadata{
+				Slug:       file,
+				Title:      f["title"].(string),
+				Author:     f["author"].(string),
+				Date:       date,
+				Categories: strings.Split(f["categories"].(string), ","),
+			},
+			Body: string(buf.Bytes()),
+		}
+
+		fmt.Println(post.Body)
 		service.posts[file] = post
 	}
 
@@ -80,10 +98,7 @@ func (service *PostService) Init() error {
 
 // GetBySlug :nodoc
 func (service PostService) GetBySlug(slug string) (Post, error) {
-	fmt.Println(slug)
 	post, ok := service.posts[slug]
-	fmt.Println(service.posts)
-	fmt.Println(post)
 	if ok {
 		return post, nil
 	}
@@ -92,12 +107,12 @@ func (service PostService) GetBySlug(slug string) (Post, error) {
 }
 
 // GetAll :nodoc
-func (service PostService) GetAll(query string) ([]string, error) {
-	res := make([]string, 0)
+func (service PostService) GetAll(query string) ([]Metadata, error) {
+	res := make([]Metadata, 0)
 
-	for slug, value := range service.posts {
+	for _, value := range service.posts {
 		if strings.Contains(value.Author, query) || strings.Contains(value.Title, query) {
-			res = append(res, slug)
+			res = append(res, value.Metadata)
 		}
 	}
 

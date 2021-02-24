@@ -2,7 +2,7 @@ use yew_router::prelude::*;
 
 #[derive(Switch, Clone)]
 pub enum Routes {
-    #[to = "/post/{slug}"]
+    #[to = "/post/{string}"]
     PostDetail(String),
     #[to = "/post"]
     Post,

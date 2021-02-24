@@ -52,7 +52,7 @@ impl Model {
                 html! { <pages::post::PostList/> }
             }
             router::Routes::Home => {
-                html! { <pages::home::Home/> }
+                html! { <pages::post::PostList/> }
             }
             router::Routes::Contact => {
                 html! { <pages::home::Home/> }

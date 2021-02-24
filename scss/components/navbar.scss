@@ -4,13 +4,21 @@
     position: fixed;
     top: 0;
     .nav-list {
+        padding-right: 5vw;
         display: flex;
         justify-content: flex-end;
         a {
-           color: #222;
+            background: black;
+            color: white;
             font-style: normal;
             padding: 20px 10px;
-            font-size: 20px;
+            font-size: 30px;
+            transition: background 1s, padding 500ms ease-in-out;
+            &:hover {
+                background: #1EAEDB;
+                padding-top: 50px;
+                transition: background 1s, padding 500ms ease-in-out;
+            }
         }
     }
 }
