@@ -1,21 +1,22 @@
 .post-list {
+    color: var(--invert-secondary);
     margin-top: 30vh;
     .post-preview {
         .content {
             border-left: #ccc 1px dashed;
             padding-left: 30px;
             p {
-                color: #333;
+                color: var(--invert-secondary);
             }
         }
     }
     .post-item {
         cursor: pointer;
-        color: #333;
+        color: var(--invert-secondary);
         &.active {
-            color: white;
+            color: var(--background);
             height: 100%;
-            background: linear-gradient(to right, #222 60%, rgba(0,0,0,0));
+            background: linear-gradient(to right, var(--invert-secondary) 60%, rgba(0,0,0,0));
         }
 
         &:hover:not(.active) {
@@ -24,12 +25,33 @@
     }
 }
 
+
 .post-detail {
     min-height: 100vh;
     min-width: 100vw;
     .content {
         .content-body {
-            background: white;
+            min-height: 100vh;
+            background: var(--background);
+            transition: background 1s;
+            *:not(a, .fab) {
+                color: var(--invert-secondary)
+            }
+
+            .container {
+                margin-bottom: 300px;
+            }
+
+            blockquote {
+                margin-left: 0;
+                padding-left: 3rem;
+                font-style: italic;
+                border-left: 1px dashed #ccc;
+            }
+
+            pre > code {
+                background: var(--secondary);
+            }
 
             img {
                 display: block;
@@ -39,12 +61,43 @@
                 max-width: 40vw;
             };
         }
-        .gradient-vertical {
+    
+        .gradient-vertical::before {
+            content: "";
             width: 100vw;
             height: 100vh;
             background: rgba(0,0,0, 200);
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(255,255,255,1) 95%, rgba(255,255,255,1) 100%);
+            background: var(--gradient-vertical);
+            position: absolute;
+            top: 0;
+            z-index: 1;
+            opacity: calc(1 - var(--dark-opacity));
+
+            transition: opacity 1s;
         }
+
+        .gradient-vertical::after {
+            content: "";
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0, 200);
+            background: var(--dark-gradient-vertical);
+            position: absolute;
+            top: 0;
+            z-index: 1;
+            opacity: var(--dark-opacity);
+            
+            transition: opacity 1s;
+        }
+
+
+
+        // .dark-gradient-vertical {
+        //     width: 100vw;
+        //     height: 100vh;
+        //     background: rgba(0,0,0, 200);
+        //     background: var(--gradient-vertical);
+        // }
     }
     .title-container {
         display: flex;
@@ -52,6 +105,7 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
+        z-index: 2;
         h1 {
             color: white;
             background: rgba(0,0,0,0.8);

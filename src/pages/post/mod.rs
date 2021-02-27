@@ -20,6 +20,7 @@ pub struct PostList {
     error: bool,
     active_post: usize,
     query: String,
+    api_url: String,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -28,6 +29,8 @@ pub struct ListItem {
     title: String,
     categories: Vec<String>,
     author: String,
+    thumbnail: String,
+    subtitle: String,
     date: String,
 }
 
@@ -45,12 +48,16 @@ pub enum Msg {
     ReceiveResponse(Result<ListResponse, anyhow::Error>),
 }
 
+#[derive(yew::Properties, Clone)]
+pub struct Props {
+    pub api_url: String,
+}
+
 impl PostList {
     fn get_post_list(&mut self) {
-        let request =
-            Request::get(format! {"http://localhost:3000/api/posts?query={}", self.query})
-                .body(Nothing)
-                .expect("could not build request");
+        let request = Request::get(format!("{}?query={}", self.api_url, self.query))
+            .body(Nothing)
+            .expect("could not build request");
         let callback = self.link.callback(
             |response: Response<Json<Result<ListResponse, anyhow::Error>>>| {
                 let Json(data) = response.into_body();
@@ -64,10 +71,10 @@ impl PostList {
 }
 
 impl Component for PostList {
-    type Properties = ();
+    type Properties = Props;
     type Message = Msg;
 
-    fn create(_: Self::Properties, link: ComponentLink<Self>) -> Self {
+    fn create(props: Self::Properties, link: ComponentLink<Self>) -> Self {
         let mut res = Self {
             fetch_task: None,
             link: link,
@@ -75,6 +82,7 @@ impl Component for PostList {
             error: false,
             active_post: 0,
             query: "".to_owned(),
+            api_url: props.api_url,
         };
         res.get_post_list();
         res
@@ -99,6 +107,7 @@ impl Component for PostList {
                     Ok(data) => self.post_list = data.data,
                     Err(_) => self.error = true,
                 }
+                self.active_post = 0;
                 self.fetch_task = None;
                 true
             }
@@ -119,8 +128,15 @@ impl Component for PostList {
         html! {
          <div class="posts" onload=self.link.callback(|_|Msg::GetData)>
              <div class="gradient-bg">
-                    <img class="half" src="/static/noimage.jpg"/>
+                    <img class="half" src={
+                        if self.post_list.len() > 0 {
+                            &self.post_list[self.active_post].thumbnail
+                        } else {
+                            "/static/noimage.jpg"
+                        }
+                    }/>
                     <div class="gradient-horizontal"/>
+                    <div class="dark-gradient-horizontal"/>
              </div>
              <div class="row">
                     <div class="six columns"><br/></div>
@@ -155,7 +171,7 @@ impl Component for PostList {
                                                     <div class="post-preview">
                                                         <h2 class="active post-item">{&item.title}</h2>
                                                         <div class="content">
-                                                            <p>{"lorem ipsum dolor ti amet consectur"}</p>
+                                                            <p>{&item.subtitle}</p>
                                                             <RouterAnchor<router::Routes> route=router::Routes::PostDetail(item.slug.clone())>
                                                                 {"Read More"}
                                                             </RouterAnchor<router::Routes>>

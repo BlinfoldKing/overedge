@@ -8,17 +8,23 @@
         display: flex;
         justify-content: flex-end;
         a {
+            margin-left: 20px;
             background: black;
             color: white;
             font-style: normal;
             padding: 20px 10px;
             font-size: 30px;
-            transition: background 1s, padding 500ms ease-in-out;
-            &:hover {
-                background: #1EAEDB;
-                padding-top: 50px;
-                transition: background 1s, padding 500ms ease-in-out;
-            }
+            height: 40px;
+            transition: background 1s, height 500ms ease-in-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        a:hover {
+            height: 70px;
+            background: #1EAEDB;
+            transition: background 1s, height 500ms ease-in-out;
         }
     }
 }

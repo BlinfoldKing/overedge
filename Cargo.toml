@@ -12,10 +12,14 @@ version = "0.1.0"
 [dependencies]
 anyhow = "1.0.38"
 chrono = "0.4.19"
+dotenv = "0.15.0"
 log = "0.4.6"
 serde = "1.0.123"
 wasm-bindgen = "0.2.67"
 wasm-logger = "0.2.0"
-web-sys = "0.3.47"
 yew = "0.17"
 yew-router = "0.14"
+
+[dependencies.web-sys]
+features = ["Document", "HtmlCollection"]
+version = "0.3.47"

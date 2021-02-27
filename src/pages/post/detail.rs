@@ -12,11 +12,14 @@ pub struct PostDetail {
     slug: String,
     error: bool,
     post: Option<Post>,
+    api_url: String,
+    loading: bool,
 }
 
 #[derive(yew::Properties, Clone)]
 pub struct Props {
     pub slug: String,
+    pub api_url: String,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -27,6 +30,8 @@ pub struct Post {
     author: String,
     date: String,
     body: String,
+    subtitle: String,
+    thumbnail: String,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -60,16 +65,22 @@ impl PostDetail {
     }
     fn render_post(&self) -> Html {
         match &self.post {
-            None => html! {
-                <div class="title-container">
-                    <h1>{"Sorry, this post can't be loaded :<"}</h1>
-                    <a href="#" onclick=self.link.callback(|_| Msg::GetData)>{"Reload"}</a>
-                </div>
-            },
+            None => {
+                if !self.loading {
+                    html! {
+                        <div class="title-container">
+                            <h1>{"Sorry, this post can't be loaded :<"}</h1>
+                            <a href="#" onclick=self.link.callback(|_| Msg::GetData)>{"Reload"}</a>
+                        </div>
+                    }
+                } else {
+                    html! {}
+                }
+            }
             Some(post) => html! {
                 <div>
                     <div class="gradient-bg">
-                        <img src="/static/noimage.jpg"/>
+                        <img src=post.thumbnail/>
                     </div>
                     <div class="content">
                         <div class="gradient-vertical">
@@ -91,7 +102,7 @@ impl PostDetail {
 
 impl PostDetail {
     fn get_post(&mut self) {
-        let request = Request::get(format! {"http://localhost:3000/api/posts/{}", self.slug})
+        let request = Request::get(format! {"{}/{}", self.api_url, self.slug})
             .body(Nothing)
             .expect("could not build request");
         let callback = self.link.callback(
@@ -102,6 +113,7 @@ impl PostDetail {
         );
 
         let task = FetchService::fetch(request, callback).expect("failed to start fetch");
+        self.loading = true;
         self.fetch_task = Some(task);
     }
 }
@@ -117,6 +129,8 @@ impl Component for PostDetail {
             post: None,
             error: false,
             fetch_task: None,
+            api_url: props.api_url,
+            loading: true,
         };
         res.get_post();
         res
@@ -134,6 +148,7 @@ impl Component for PostDetail {
                     Err(_) => self.error = true,
                 }
                 self.fetch_task = None;
+                self.loading = false;
                 true
             }
         }

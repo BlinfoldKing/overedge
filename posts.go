@@ -3,21 +3,24 @@ package main
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
 	"github.com/gernest/front"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/renderer/html"
 )
 
 type Metadata struct {
 	Slug       string    `json:"slug"`
 	Title      string    `json:"title"`
+	Subtitle   string    `json:"subtitle"`
+	Thumbnail  string    `json:"thumbnail"`
 	Categories []string  `json:"categories"`
 	Author     string    `json:"author"`
 	Date       time.Time `json:"date"`
@@ -61,6 +64,7 @@ func (service *PostService) Init() error {
 
 		var buf bytes.Buffer
 		markdown := goldmark.New(
+			goldmark.WithRendererOptions(html.WithUnsafe()),
 			goldmark.WithExtensions(
 				extension.DefinitionList,
 				extension.Footnote,
@@ -82,6 +86,8 @@ func (service *PostService) Init() error {
 			Metadata: Metadata{
 				Slug:       file,
 				Title:      f["title"].(string),
+				Subtitle:   f["subtitle"].(string),
+				Thumbnail:  f["thumbnail"].(string),
 				Author:     f["author"].(string),
 				Date:       date,
 				Categories: strings.Split(f["categories"].(string), ","),
@@ -89,8 +95,9 @@ func (service *PostService) Init() error {
 			Body: string(buf.Bytes()),
 		}
 
-		fmt.Println(post.Body)
-		service.posts[file] = post
+		if f["status"] != "draft" {
+			service.posts[file] = post
+		}
 	}
 
 	return err
@@ -110,11 +117,17 @@ func (service PostService) GetBySlug(slug string) (Post, error) {
 func (service PostService) GetAll(query string) ([]Metadata, error) {
 	res := make([]Metadata, 0)
 
+	query = strings.ToLower(query)
+
 	for _, value := range service.posts {
-		if strings.Contains(value.Author, query) || strings.Contains(value.Title, query) {
+		if strings.Contains(strings.ToLower(value.Author), query) || strings.Contains(strings.ToLower(value.Title), query) {
 			res = append(res, value.Metadata)
 		}
 	}
+
+	sort.SliceStable(res, func(i, j int) bool {
+		return res[i].Date.After(res[j].Date) && res[i].Slug > res[j].Slug
+	})
 
 	return res, nil
 }
