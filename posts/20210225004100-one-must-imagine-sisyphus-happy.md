@@ -1,7 +1,7 @@
 +++
 title: "One Must Imagine Sisyphus Happy"
 subtitle:  Unfortunately, the answer is not 42
-date:   2021-02-02T17:48:25Z07:00
+date:   2021-02-03T17:48:25Z07:00
 categories: Philoshopy 
 author: Ganesha Danu Enastika
 thumbnail: /static/sisyphus.png

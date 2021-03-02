@@ -38,8 +38,39 @@
                 color: var(--invert-secondary)
             }
 
-            .container {
-                margin-bottom: 300px;
+            #disqus-thread {
+                margin-top: 30px;
+                .comment-count {
+                    color: var(--invert-secondary) !important;
+                }
+
+                .post-message {
+                    color: var(--invert-secondary) !important;
+                }
+            }
+
+            #comment {
+                height: 200px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                a {
+                    color: var(--invert-secondary) !important;
+                    font-weight: bold;
+                }
+            }
+
+            .recommendation {
+                margin: 50px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-end;
+                .next {
+                    text-align: end;
+                }
+                div {
+                    font-weight: bold;
+                }
             }
 
             blockquote {

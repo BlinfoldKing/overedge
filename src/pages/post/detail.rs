@@ -6,6 +6,12 @@ use yew::{
 };
 use yew_router::prelude::*;
 
+#[path = "../../router.rs"]
+mod router;
+
+#[path = "../../js.rs"]
+mod js;
+
 pub struct PostDetail {
     fetch_task: Option<FetchTask>,
     link: ComponentLink<Self>,
@@ -14,12 +20,19 @@ pub struct PostDetail {
     post: Option<Post>,
     api_url: String,
     loading: bool,
+    comment: bool,
 }
 
 #[derive(yew::Properties, Clone)]
 pub struct Props {
     pub slug: String,
     pub api_url: String,
+}
+
+#[derive(Deserialize, Debug, Clone)]
+pub struct Metadata {
+    slug: String,
+    title: String,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -32,6 +45,8 @@ pub struct Post {
     body: String,
     subtitle: String,
     thumbnail: String,
+    next: Option<Metadata>,
+    prev: Option<Metadata>,
 }
 
 #[derive(Deserialize, Debug, Clone)]
@@ -44,9 +59,25 @@ pub struct PostResponse {
 pub enum Msg {
     GetData,
     ReceiveResponse(Result<PostResponse, anyhow::Error>),
+    ShowComment,
 }
 
 impl PostDetail {
+    fn render_comment(&self) -> Html {
+        if !self.comment {
+            return html! {
+                <div id="comment">
+                    <a href="#comment" onclick=self.link.callback(|_| Msg::ShowComment)>{"Show Discussion"}</a>
+                </div>
+            };
+        }
+        html! {
+            <div>
+                <div id="disqus_thread"></div>
+                <noscript>{"Please enable JavaScript to view the"} <a href="https://disqus.com/?ref_noscript">{"comments powered by Disqus."}</a></noscript>
+            </div>
+        }
+    }
     fn render_body(&self) -> Html {
         web_sys::window()
             .and_then(|window| window.document())
@@ -64,6 +95,7 @@ impl PostDetail {
             )
     }
     fn render_post(&self) -> Html {
+        // parse_markdown("hello world".to_owned());
         match &self.post {
             None => {
                 if !self.loading {
@@ -90,7 +122,41 @@ impl PostDetail {
                         </div>
                         <div class="content-body">
                             <div class="container">
-                                {self.render_body()}
+                                <div class="post-content">
+                                    {self.render_body()}
+                                </div>
+                                <hr/>
+                                <div class="recommendation">
+                                    {
+                                        match post.prev.clone() {
+                                            None => html!{<div><br/></div>},
+                                            Some(prev) => html!{
+                                                <div class="prev">
+                                                    <div>{"Prev"}</div>
+                                                    <a href=format!("/post/{}", prev.slug)>
+                                                        {prev.title.to_owned()}
+                                                    </a>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                    {
+                                        match post.next.clone() {
+                                            None => html!{<div><br/></div>},
+                                            Some(next) => html!{
+                                                <div class="next">
+                                                    <div>{"Next"}</div>
+                                                    <a href=format!("/post/{}", next.slug)>
+                                                        {next.title.to_owned()}
+                                                    </a>
+                                                </div>
+                                            }
+                                        }
+                                    }
+                                </div>
+                            </div>
+                           <div class="container">
+                                {self.render_comment()}
                             </div>
                         </div>
                     </div>
@@ -131,6 +197,7 @@ impl Component for PostDetail {
             fetch_task: None,
             api_url: props.api_url,
             loading: true,
+            comment: false,
         };
         res.get_post();
         res
@@ -149,6 +216,11 @@ impl Component for PostDetail {
                 }
                 self.fetch_task = None;
                 self.loading = false;
+                true
+            }
+            Msg::ShowComment => {
+                self.comment = true;
+                js::disqus_reset(self.slug.clone());
                 true
             }
         }

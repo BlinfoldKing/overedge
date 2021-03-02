@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 
@@ -16,14 +15,21 @@ import (
 	"github.com/yuin/goldmark/renderer/html"
 )
 
+type Recommendation struct {
+	Slug  string `json:"slug"`
+	Title string `json:"title"`
+}
+
 type Metadata struct {
-	Slug       string    `json:"slug"`
-	Title      string    `json:"title"`
-	Subtitle   string    `json:"subtitle"`
-	Thumbnail  string    `json:"thumbnail"`
-	Categories []string  `json:"categories"`
-	Author     string    `json:"author"`
-	Date       time.Time `json:"date"`
+	Slug       string          `json:"slug"`
+	Title      string          `json:"title"`
+	Subtitle   string          `json:"subtitle"`
+	Thumbnail  string          `json:"thumbnail"`
+	Categories []string        `json:"categories"`
+	Author     string          `json:"author"`
+	Next       *Recommendation `json:"next"`
+	Prev       *Recommendation `json:"prev"`
+	Date       time.Time       `json:"date"`
 }
 
 // Post post type
@@ -91,6 +97,8 @@ func (service *PostService) Init() error {
 				Author:     f["author"].(string),
 				Date:       date,
 				Categories: strings.Split(f["categories"].(string), ","),
+				Prev:       nil,
+				Next:       nil,
 			},
 			Body: string(buf.Bytes()),
 		}
@@ -98,6 +106,27 @@ func (service *PostService) Init() error {
 		if f["status"] != "draft" {
 			service.posts[file] = post
 		}
+	}
+
+	var prev string = ""
+	for slug := range service.posts {
+		currPost := service.posts[slug]
+		if prev != "" {
+			prevPost := service.posts[prev]
+			prevPost.Next = &Recommendation{
+				Slug:  currPost.Slug,
+				Title: currPost.Title,
+			}
+			service.posts[prev] = prevPost
+
+			currPost.Prev = &Recommendation{
+				Slug:  prevPost.Slug,
+				Title: prevPost.Title,
+			}
+			service.posts[slug] = currPost
+		}
+
+		prev = slug
 	}
 
 	return err
@@ -124,10 +153,6 @@ func (service PostService) GetAll(query string) ([]Metadata, error) {
 			res = append(res, value.Metadata)
 		}
 	}
-
-	sort.SliceStable(res, func(i, j int) bool {
-		return res[i].Date.After(res[j].Date) && res[i].Slug > res[j].Slug
-	})
 
 	return res, nil
 }

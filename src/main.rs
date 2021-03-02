@@ -42,26 +42,41 @@ impl Component for Model {
         let url = self.api_url.clone();
         html! {
         <div>
-            <components::navbar::Navbar/>
             <router::AppRouter
                 render=router::AppRouter::render(move |switch: router::Routes| {
                     let api_url = url.clone();
-                    match switch {
-                        router::Routes::PostDetail(slug) => {
-                            html! { <pages::post::PostDetail slug=slug api_url=api_url/> }
+                    html!{
+                        <>
+                        {
+                            match switch.clone() {
+                                router::Routes::PostDetail(slug) => {
+                                    html! {<components::navbar::Navbar slug=slug/>}
+                                }
+                                _ => {
+                                    html! {<components::navbar::Navbar slug=""/>}
+                                }
+                            }
                         }
-                        router::Routes::Post => {
-                            html! { <pages::post::PostList api_url=api_url/> }
+                        {
+                            match switch {
+                                router::Routes::PostDetail(slug) => {
+                                    html! { <pages::post::PostDetail slug=slug api_url=api_url/> }
+                                }
+                                router::Routes::Post => {
+                                    html! { <pages::post::PostList api_url=api_url/> }
+                                }
+                                router::Routes::Home => {
+                                    html! { <pages::post::PostList api_url=api_url/> }
+                                }
+                                router::Routes::Contact => {
+                                    html! { <pages::home::Home/> }
+                                }
+                                _ => {
+                                    html! { <pages::error::Error/> }
+                                }
+                            }
                         }
-                        router::Routes::Home => {
-                            html! { <pages::post::PostList api_url=api_url/> }
-                        }
-                        router::Routes::Contact => {
-                            html! { <pages::home::Home/> }
-                        }
-                        _ => {
-                            html! { <pages::error::Error/> }
-                        }
+                        </>
                     }
                 })
                 redirect=router::AppRouter::redirect(|route: yew_router::route::Route| {
@@ -78,6 +93,6 @@ pub fn main() {
     wasm_logger::init(wasm_logger::Config::default());
     // use std::env;
     yew::start_app_with_props::<Model>(Props {
-        api_url: "http://localhost:8000/api/posts".to_owned(),
+        api_url: "/api/posts".to_owned(),
     });
 }
