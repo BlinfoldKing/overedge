@@ -69,5 +69,6 @@ func main() {
 		})
 	})
 
+	e.Static("/*", "dist/")
 	e.Logger.Fatal(e.Start(":" + port))
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"os"
@@ -32,6 +33,12 @@ type Metadata struct {
 	Date       time.Time       `json:"date"`
 }
 
+var published []string
+
+type publishedPost struct {
+	Posts []string `json:"posts"`
+}
+
 // Post post type
 type Post struct {
 	Metadata
@@ -56,10 +63,15 @@ func (service *PostService) Init() error {
 		return nil
 	})
 
+	postsFile, _ := ioutil.ReadFile("./posts/posts.json")
+	posts := publishedPost{}
+	json.Unmarshal(postsFile, &posts)
+
 	m := front.NewMatter()
+	published = posts.Posts
 	m.Handle("+++", front.YAMLHandler)
-	for _, file := range files {
-		content, err := ioutil.ReadFile("./" + file)
+	for _, file := range posts.Posts {
+		content, err := ioutil.ReadFile("./posts/" + file + ".md")
 		if err != nil {
 			return err
 		}
@@ -85,8 +97,8 @@ func (service *PostService) Init() error {
 
 		date, _ := time.Parse(time.RFC3339, f["date"].(string))
 
-		file = file[6:]
-		file = file[:len(file)-3]
+		// file = file[6:]
+		// file = file[:len(file)-3]
 
 		post := Post{
 			Metadata: Metadata{
@@ -148,9 +160,10 @@ func (service PostService) GetAll(query string) ([]Metadata, error) {
 
 	query = strings.ToLower(query)
 
-	for _, value := range service.posts {
-		if strings.Contains(strings.ToLower(value.Author), query) || strings.Contains(strings.ToLower(value.Title), query) {
-			res = append(res, value.Metadata)
+	for _, value := range published {
+		post := service.posts[value]
+		if strings.Contains(strings.ToLower(post.Author), query) || strings.Contains(strings.ToLower(post.Title), query) {
+			res = append(res, post.Metadata)
 		}
 	}
 

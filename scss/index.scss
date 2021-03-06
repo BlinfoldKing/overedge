@@ -37,6 +37,7 @@ html {
     --invert: black;
     --invert-secondary: #333;
     --dark-opacity: 0;
+    --dark-home-opacity: 0;
     max-width: 100vw;
     overflow-x: hidden;
     body {
@@ -46,6 +47,7 @@ html {
 
 html[data-theme="dark"] {
     --dark-opacity: 1;
+    --dark-home-opacity: 0.9;
     --background: black;
     --secondary: #333;
     --invert: white;

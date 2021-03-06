@@ -128,7 +128,7 @@ impl Component for PostList {
         html! {
          <div class="posts" onload=self.link.callback(|_|Msg::GetData)>
              <div class="gradient-bg">
-                    <img class="half" src={
+                    <img src={
                         if self.post_list.len() > 0 {
                             &self.post_list[self.active_post].thumbnail
                         } else {
@@ -144,22 +144,17 @@ impl Component for PostList {
                         <div class="container">
                             <div class="post-list">
                                 <h1>
-                                    {"Posts"}
+                                    {"Hi,"}
                                 </h1>
                                 <p>{"random thought, stories, and some useless knowledge"}</p>
                                 <div class="row">
-                                    <div class="eleven columns">
+                                    <form onsubmit=self.link.callback(|_| Msg::GetData) action="#">
                                         <input
                                             oninput=self.link.callback(|input: InputData| {
                                                 Msg::SetQuery(input.value)
                                             })
-                                            class="u-full-width" type="text" placeholder="looking for something" id="searchInput"/>
-                                    </div>
-                                    <div class="one columns">
-                                        <button class="button-primary" onclick=self.link.callback(|_| Msg::GetData)>
-                                            <i class="fas fa-search" style="font-size: 18px"></i>
-                                        </button>
-                                    </div>
+                                            class="u-full-width" type="text" placeholder="Type Something and Press Enter" id="searchInput"/>
+                                    </form>
                                 </div>
                                 {
                                     self.post_list

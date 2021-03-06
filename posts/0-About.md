@@ -13,7 +13,7 @@ status: published
 Hello,  
 I don't know how you manage to find this tiny trace of my virtual existence, but however it is and whoever are you i bid you welcome.
 
-Professionally, i am a poet with speciality of composing line of verses that make electrical machine bend to my will, mastering both the fine art of back end engineering and excruiciating pain of ~~javascript~~ front end development. Ventured from the smallest unto largest kind of tech court.
+Professionally, i am a poet with speciality of composing line of verses that make electrical machine bend to my will, mastering both the fine art of back end engineering and excruciating pain of ~~javascript~~ front end development. Ventured from the smallest unto largest kind of tech court.
 
 And...
 

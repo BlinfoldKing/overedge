@@ -23,7 +23,7 @@
         background: rgba(0,0,0, 200);
         background: var(--dark-gradient-horizontal);
         
-        opacity: var(--dark-opacity);
+        opacity: var(--dark-home-opacity);
         transition: opacity 0.5s;
 
         @media (max-width: 550px) {
@@ -42,7 +42,7 @@
         background: var(--gradient-horizontal);
         transition: background 0.5s ease-in;
 
-        opacity: calc(1 - var(--dark-opacity));
+        opacity: calc(0.9 - var(--dark-home-opacity));
         transition: opacity 0.5s;
 
         @media (max-width: 550px) {

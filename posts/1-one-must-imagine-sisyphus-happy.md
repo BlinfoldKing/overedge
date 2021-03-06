@@ -10,7 +10,7 @@ status: published
 
 # One Must Imagine Sisyphus Happy
 
-> To live is to suffer, to survive is to find some meaning in the suffering. - Friedrich Nietzsche
+> "To live is to suffer, to survive is to find some meaning in the suffering." - Friedrich Nietzsche
 
 Hey you,  
 how's life? Did you manage to achieve something in your life? or did life betray all of your hard work?
@@ -39,4 +39,4 @@ Just as he tricks and deceive gods in his lifetime, wouldn't it be fitting that 
 
 So, Is life meaningless? Probably yes, but probably not. But even if the world is meaningless and absurd, should it bother us? Absolutely not, just as Sisyphus giving meaning to his boulder-pushing existence with just being happy, one must strive to give his/her life greatest burdens a meaning and being happy in the meantime.
 
-> I leave Sisyphus at the foot of the mountain. One always finds one's burden again. But Sisyphus teaches the higher fidelity that negates the gods and raises rocks. He too concludes that all is well. This universe henceforth without a master seems to him neither sterile nor futile. Each atom of that stone, each mineral flake of that night-filled mountain, in itself, forms a world. The struggle itself toward the heights is enough to fill a man's heart. One must imagine Sisyphus happy. - Albert Camus
+> "I leave Sisyphus at the foot of the mountain. One always finds one's burden again. But Sisyphus teaches the higher fidelity that negates the gods and raises rocks. He too concludes that all is well. This universe henceforth without a master seems to him neither sterile nor futile. Each atom of that stone, each mineral flake of that night-filled mountain, in itself, forms a world. The struggle itself toward the heights is enough to fill a man's heart. One must imagine Sisyphus happy." - Albert Camus
