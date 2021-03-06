@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
-	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -54,16 +52,7 @@ type PostService struct {
 func (service *PostService) Init() error {
 	service.posts = make(map[string]Post)
 
-	files := make([]string, 0)
-	err := filepath.Walk("./posts", func(path string, info os.FileInfo, err error) error {
-		if path != "./posts" {
-			files = append(files, path)
-		}
-
-		return nil
-	})
-
-	postsFile, _ := ioutil.ReadFile("./posts/posts.json")
+	postsFile, _ := ioutil.ReadFile("posts/posts.json")
 	posts := publishedPost{}
 	json.Unmarshal(postsFile, &posts)
 
@@ -141,7 +130,7 @@ func (service *PostService) Init() error {
 		prev = slug
 	}
 
-	return err
+	return nil
 }
 
 // GetBySlug :nodoc
