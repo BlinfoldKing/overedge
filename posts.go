@@ -60,7 +60,7 @@ func (service *PostService) Init() error {
 	published = posts.Posts
 	m.Handle("+++", front.YAMLHandler)
 	for _, file := range posts.Posts {
-		content, err := ioutil.ReadFile("./posts/" + file + ".md")
+		content, err := ioutil.ReadFile("posts/" + file + ".md")
 		if err != nil {
 			return err
 		}
